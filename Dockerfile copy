@@ -1,0 +1,55 @@
+
+# Stage 1. For build React app
+FROM node:16-alpine AS builder
+# Set working directory
+WORKDIR /app
+# Copy package.json
+COPY package.json .
+# Copy package-lock.json
+COPY package-lock.json .
+# Run npm Install 
+RUN npm install --force --verbose
+# Copy dependency files
+COPY . .
+# Run npm build 
+RUN npm run build
+#Stage 2
+FROM nginx:alpine
+WORKDIR /usr/share/nginx/html
+RUN rm -rf ./*
+COPY --from=builder /app/build .
+#COPY nginx.conf /etc/nginx/nginx.conf
+EXPOSE 8080
+ENTRYPOINT ["nginx","-g","daemon off;"]
+##ENV NODE_ENV=development
+
+#ENV REACT_APP_COMPANY_ID 1
+#ENV REACT_APP_API_URL https://cartones-api.azurewebsites.net/api/
+#ENV REACT_APP_COMPANY_NAME Sologist
+#ENV REACT_APP_COMPANY_POWERED powered by Sologist
+# local runtime configs
+#ENV NODE_ENV=development
+#ENV PORT=3007
+
+#EXPOSE 3007
+
+# Se instalan dependencias especificadas en package.json
+#RUN npm install --legacy--peer-deps --verbose&& \ 
+#    npm run build
+
+#COPY --from=0 $appDir .
+#COPY . .    
+
+# Crear usuario
+#RUN adduser -D dockeruser
+
+# Asignar permisos
+#RUN chown -R dockeruser /var/www/app
+
+# Se define el usuario a ejecutar
+#USER dockeruser
+
+# Se inicia aplicacion
+#ENTRYPOINT ["npm"]
+#CMD ["start"]
+

@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  app:
+      #container-name: sologist-app-c
+      image: bultosapi.azurecr.io/sologist-app:1.6
+      #tag: 1.9
+      build: 
+        context: .
+      ports:
+       - 8080:80
